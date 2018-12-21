@@ -1,0 +1,6 @@
+C:\Workspace\Kurtman\IOT\IOT.Domain.Data\obj\Debug\IOT.Domain.Data.csprojAssemblyReference.cache
+C:\Workspace\Kurtman\IOT\IOT.Domain.Data\obj\Debug\IOT.Domain.Data.csproj.CoreCompileInputs.cache
+C:\Workspace\Kurtman\IOT\IOT.Domain.Data\bin\Debug\IOT.Domain.Data.dll
+C:\Workspace\Kurtman\IOT\IOT.Domain.Data\bin\Debug\IOT.Domain.Data.pdb
+C:\Workspace\Kurtman\IOT\IOT.Domain.Data\obj\Debug\IOT.Domain.Data.dll
+C:\Workspace\Kurtman\IOT\IOT.Domain.Data\obj\Debug\IOT.Domain.Data.pdb

@@ -1,0 +1,14 @@
+C:\Workspace\Kurtman\IOT\IOT.Presentation.ServerConsole\bin\Debug\IOT.Presentation.ServerConsole.exe.config
+C:\Workspace\Kurtman\IOT\IOT.Presentation.ServerConsole\bin\Debug\IOT.Presentation.ServerConsole.exe
+C:\Workspace\Kurtman\IOT\IOT.Presentation.ServerConsole\bin\Debug\IOT.Presentation.ServerConsole.pdb
+C:\Workspace\Kurtman\IOT\IOT.Presentation.ServerConsole\obj\Debug\IOT.Presentation.ServerConsole.csprojAssemblyReference.cache
+C:\Workspace\Kurtman\IOT\IOT.Presentation.ServerConsole\obj\Debug\IOT.Presentation.ServerConsole.csproj.CoreCompileInputs.cache
+C:\Workspace\Kurtman\IOT\IOT.Presentation.ServerConsole\obj\Debug\IOT.Presentation.ServerConsole.exe
+C:\Workspace\Kurtman\IOT\IOT.Presentation.ServerConsole\obj\Debug\IOT.Presentation.ServerConsole.pdb
+C:\Workspace\Kurtman\IOT\IOT.Presentation.ServerConsole\bin\Debug\IOT.Domain.Server.dll
+C:\Workspace\Kurtman\IOT\IOT.Presentation.ServerConsole\bin\Debug\IOT.Domain.Server.pdb
+C:\Workspace\Kurtman\IOT\IOT.Presentation.ServerConsole\obj\Debug\IOT.Presentation.ServerConsole.csproj.CopyComplete
+C:\Workspace\Kurtman\IOT\IOT.Presentation.ServerConsole\bin\Debug\IOT.Domain.Client.dll
+C:\Workspace\Kurtman\IOT\IOT.Presentation.ServerConsole\bin\Debug\IOT.Domain.Client.pdb
+C:\Workspace\Kurtman\IOT\IOT.Presentation.ServerConsole\bin\Debug\IOT.Domain.Data.dll
+C:\Workspace\Kurtman\IOT\IOT.Presentation.ServerConsole\bin\Debug\IOT.Domain.Data.pdb
