@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IOT.Presentation.ClientCons
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IOT.Domain.Data", "IOT.Domain.Data\IOT.Domain.Data.csproj", "{84164901-567F-4A42-9366-DFB3A07DE09D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IOT.Presentation.Web", "IOT.Presentation.Web\IOT.Presentation.Web.csproj", "{657985EB-3E21-460D-8673-E783FB7B2195}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,6 +45,10 @@ Global
 		{84164901-567F-4A42-9366-DFB3A07DE09D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{84164901-567F-4A42-9366-DFB3A07DE09D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{84164901-567F-4A42-9366-DFB3A07DE09D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{657985EB-3E21-460D-8673-E783FB7B2195}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{657985EB-3E21-460D-8673-E783FB7B2195}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{657985EB-3E21-460D-8673-E783FB7B2195}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{657985EB-3E21-460D-8673-E783FB7B2195}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -53,6 +59,7 @@ Global
 		{4A534AEA-27FC-47DC-8BC9-164BD5707414} = {8E405548-DBCD-4338-8610-6EE071A2F50E}
 		{3A38F878-F7D3-435A-99BB-7C071EE13CC6} = {8E405548-DBCD-4338-8610-6EE071A2F50E}
 		{84164901-567F-4A42-9366-DFB3A07DE09D} = {978FBB00-B797-41BC-8F9F-99A62AE4FCD6}
+		{657985EB-3E21-460D-8673-E783FB7B2195} = {8E405548-DBCD-4338-8610-6EE071A2F50E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3BA420A2-A731-44A6-BDD0-A5EACF721D4D}

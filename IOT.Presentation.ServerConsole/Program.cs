@@ -3,9 +3,14 @@ using IOT.Domain.Data.Impls.Serializers;
 using IOT.Domain.Data.Interfaces.Messages;
 using IOT.Domain.Data.Models.Messages;
 using IOT.Domain.Server;
+using Microsoft.AspNet.SignalR;
+using Microsoft.Owin.Cors;
+using Microsoft.Owin.Hosting;
+using Owin;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -15,25 +20,39 @@ namespace IOT.Presentation.ServerConsole
     {
         static List<IOTClient> clientList = new List<IOTClient>();
 
+        static Queue<IOTClientOnMessageReceivedArgs> incomingMessageQueue = new Queue<IOTClientOnMessageReceivedArgs>();
+        static Queue<IOTClientOnMessageReceivedArgs> outgoingMessageQueue = new Queue<IOTClientOnMessageReceivedArgs>();
+
         static void Main(string[] args)
         {
-            var server = new IOTServer();
+            string url = "http://localhost:1235";
 
-            server.OnClientConnected += Server_OnClientConnected;
-
-            server.Start();
-
-            while (true)
+            using (WebApp.Start(url))
             {
-                var cmd = Console.ReadLine();
-                if (cmd.Equals("exit"))
+                Console.WriteLine("Server running on {0}", url);
+
+                var server = new IOTServer();
+
+                server.OnClientConnected += Server_OnClientConnected;
+
+                server.Start();
+
+                while (true)
                 {
-                    server.Stop();
-                    break;
-                }
-                else
-                {
-                    HandleMessage(cmd);
+                    var cmd = Console.ReadLine();
+                    if (cmd.Equals("exit"))
+                    {
+                        server.Stop();
+                        break;
+                    }
+                    else
+                    {
+                        if (clientList.Count > 0)
+                        {
+                            clientList[0].Send(cmd);
+                            //HandleMessage(clientList[0], cmd);
+                        }
+                    }
                 }
             }
 
@@ -68,21 +87,35 @@ namespace IOT.Presentation.ServerConsole
             Console.WriteLine("Message received from server");
             Console.WriteLine(message);
 
-            HandleMessage(message);
+            //HandleMessage(sender, message);
+
+            //Console.WriteLine(MessageSerializer.Deserialize(message));
         }
 
-        private static void HandleMessage(string str)
+        private static void HandleMessage(IOTClient client, string str)
         {
             var message = MessageSerializer.Deserialize(str);
 
             switch (message.MessageType)
             {
                 case Domain.Data.Enums.MessageType.Command:
-                    HandleCommandMessage(message);
+                    //outgoingMessageQueue.Enqueue(new IOTClientOnMessageReceivedArgs
+                    //{
+                    //    Client = client,
+                    //    Message = message
+                    //});
+                    //HandleCommandMessage(message);
+
+                    client.Send(str);
                     break;
 
                 case Domain.Data.Enums.MessageType.Info:
-                    HandleInfoMessage(message);
+                    incomingMessageQueue.Enqueue(new IOTClientOnMessageReceivedArgs
+                    {
+                        Client = client,
+                        Message = message
+                    });
+                    //HandleInfoMessage(message);
                     break;
             }
         }
@@ -101,6 +134,30 @@ namespace IOT.Presentation.ServerConsole
             {
 
             }
+        }
+    }
+
+    public class IOTClientOnMessageReceivedArgs
+    {
+        public IMessage Message { get; set; }
+
+        public IOTClient Client { get; set; }
+    }
+
+    class Startup
+    {
+        public void Configuration(IAppBuilder app)
+        {
+            app.UseCors(CorsOptions.AllowAll);
+            app.MapSignalR();
+        }
+    }
+
+    public class MyHub : Hub
+    {
+        public void Send(string name, string message)
+        {
+            Clients.All.addMessage(name, message);
         }
     }
 }

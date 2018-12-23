@@ -15,9 +15,6 @@ namespace IOT.Domain.Server
 
         private Thread thread;
 
-        private Queue<string> incomingMessageQueue = new Queue<string>();
-        private Queue<string> outgoingMessageQueue = new Queue<string>();
-
         private bool isListening = false;
 
         public event OnClientConnected OnClientConnected = null;
