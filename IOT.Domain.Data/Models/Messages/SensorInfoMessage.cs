@@ -10,6 +10,9 @@ namespace IOT.Domain.Data.Models.Messages
 {
     public class SensorInfoMessage : IMessage
     {
+        public const MessageType MESSAGE_TYPE = MessageType.Info;
+        public const ControllerType CONTROLLER_TYPE = ControllerType.Sensor;
+
         private const string noKey = "no";
         private const string temperatureKey = "temp";
         private const string humidityKey = "hum";

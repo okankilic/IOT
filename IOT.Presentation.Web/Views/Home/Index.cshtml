@@ -2,30 +2,87 @@
     ViewBag.Title = "Home Page";
 }
 
-<div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
+<div class="row">
+    <div class="col-sm-12">
+        <button id="ledOn" type="button" class="btn btn-success" disabled>
+            Led ON
+        </button>
+        <button id="ledOff" type="button" class="btn btn-danger" disabled>
+            Led OFF
+        </button>
+    </div>
 </div>
 
+<br />
+
 <div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>
-            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
-        </p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
+    <div class="col-sm-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Temperature
+            </div>
+            <div id="temperature" class="panel-body">0</div>
+        </div>
     </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
+    <div class="col-sm-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Humidity
+            </div>
+            <div id="humidity" class="panel-body">0</div>
+        </div>
     </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
+    <div class="col-sm-4">
+
     </div>
 </div>
+
+@section scripts {
+
+    <script src="http://localhost:1235/signalr/hubs"></script>
+
+    <script type="text/javascript">
+
+        var iotHub = $.connection.iotHub;
+
+        $.connection.hub.url = 'http://localhost:1235/signalr';
+
+        iotHub.client.addMessage = function (msg) {
+            console.log(msg);
+        };
+
+        iotHub.client.onConnected = function () {
+            $('#ledOn').prop('disabled', false);
+            $('#ledOff').prop('disabled', false);
+        }
+
+        iotHub.client.onDisconnected = function () {
+            $('#ledOn').prop('disabled', true);
+            $('#ledOff').prop('disabled', true);
+        }
+
+        iotHub.client.onMessageReceived = function (msg) {
+
+            $('#temperature').html(parseFloat(msg['Temperature']).toFixed(2));
+            $('#humidity').html(parseFloat(msg['Humidity']).toFixed(2));
+
+            //console.log(msg);
+        }
+
+        $.connection.hub.start().done(function () {
+
+            console.log("Connected, transport = " + $.connection.hub.transport.name);
+
+            $('#ledOn').click(function () {
+                iotHub.server.send('Command/Led/on');
+            });
+
+            $('#ledOff').click(function () {
+                iotHub.server.send('Command/Led/off');
+            });
+
+        })
+
+    </script>
+
+}

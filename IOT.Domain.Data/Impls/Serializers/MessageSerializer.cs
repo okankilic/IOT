@@ -16,6 +16,10 @@ namespace IOT.Domain.Data.Impls.Serializers
             {
                 new KeyValuePair<MessageType, ControllerType>(LedOnOffMessage.MESSAGE_TYPE, LedOnOffMessage.CONTROLLER_TYPE),
                 typeof(LedOnOffMessage)
+            },
+            {
+                new KeyValuePair<MessageType, ControllerType>(SensorInfoMessage.MESSAGE_TYPE, SensorInfoMessage.CONTROLLER_TYPE),
+                typeof(SensorInfoMessage)
             }
         };
 
@@ -33,14 +37,7 @@ namespace IOT.Domain.Data.Impls.Serializers
                 '?',
                 (message, args) =>
                 {
-                    message = new Message();
-
-                    var x = args[0].Split('/');
-
-                    message.MessageType = (MessageType)Enum.Parse(typeof(MessageType), x[0]);
-                    message.ControllerType = (ControllerType)Enum.Parse(typeof(ControllerType), x[1]);
-
-                    message.Action = x[2];
+                    message.Action = args[0];
                 }
             },
             {
@@ -64,9 +61,8 @@ namespace IOT.Domain.Data.Impls.Serializers
             foreach (var splitter in Splitters)
             {
                 var args = str.Split(splitter.Key);
-                var action = splitter.Value;
 
-                action.Invoke(message, args);
+                splitter.Value.Invoke(message, args);
 
                 str = args[args.Length - 1];
             }
@@ -85,6 +81,10 @@ namespace IOT.Domain.Data.Impls.Serializers
             if (t == typeof(LedOnOffMessage))
             {
                 return new LedOnOffMessage(message.Action, message.Args);
+            }
+            else if (t == typeof(SensorInfoMessage))
+            {
+                return new SensorInfoMessage(message.Action, message.Args);
             }
 
             return message;

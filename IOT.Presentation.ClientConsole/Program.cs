@@ -12,6 +12,7 @@ namespace IOT.Presentation.ClientConsole
         static void Main(string[] args)
         {
             var client = new IOTClient(1, "localhost", 1234);
+
             client.Connect();
 
             while (true)

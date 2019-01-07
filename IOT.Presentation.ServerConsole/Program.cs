@@ -4,8 +4,10 @@ using IOT.Domain.Data.Interfaces.Messages;
 using IOT.Domain.Data.Models.Messages;
 using IOT.Domain.Server;
 using Microsoft.AspNet.SignalR;
+using Microsoft.AspNet.SignalR.Hubs;
 using Microsoft.Owin.Cors;
 using Microsoft.Owin.Hosting;
+using Newtonsoft.Json;
 using Owin;
 using System;
 using System.Collections.Generic;
@@ -18,10 +20,7 @@ namespace IOT.Presentation.ServerConsole
 {
     class Program
     {
-        static List<IOTClient> clientList = new List<IOTClient>();
-
-        static Queue<IOTClientOnMessageReceivedArgs> incomingMessageQueue = new Queue<IOTClientOnMessageReceivedArgs>();
-        static Queue<IOTClientOnMessageReceivedArgs> outgoingMessageQueue = new Queue<IOTClientOnMessageReceivedArgs>();
+        static IOTHub hub = new IOTHub();
 
         static void Main(string[] args)
         {
@@ -47,10 +46,9 @@ namespace IOT.Presentation.ServerConsole
                     }
                     else
                     {
-                        if (clientList.Count > 0)
+                        if (hub.ClientList.Count > 0)
                         {
-                            clientList[0].Send(cmd);
-                            //HandleMessage(clientList[0], cmd);
+                            hub.ClientList[0].Send(cmd);
                         }
                     }
                 }
@@ -58,7 +56,7 @@ namespace IOT.Presentation.ServerConsole
 
         }
 
-        private static void Server_OnClientConnected(System.Net.Sockets.TcpClient tcpClient)
+        private static void Server_OnClientConnected(TcpClient tcpClient)
         {
             Console.WriteLine("IOTClient connected");
 
@@ -67,7 +65,9 @@ namespace IOT.Presentation.ServerConsole
             iotClient.OnDisconnected += IotClient_OnDisconnected;
             iotClient.OnMessageReceived += IotClient_OnMessageReceived;
 
-            clientList.Add(iotClient);
+            hub.ClientList.Add(iotClient);
+
+            hub.OnIotConnected();
 
             iotClient.Start();
         }
@@ -77,63 +77,19 @@ namespace IOT.Presentation.ServerConsole
             client.OnDisconnected -= IotClient_OnDisconnected;
             client.OnMessageReceived -= IotClient_OnMessageReceived;
 
-            clientList.Remove(client);
+            hub.ClientList.Remove(client);
+
+            hub.OnIotDisconnected();
 
             Console.WriteLine("IOTClient disconnected");
         }
 
         private static void IotClient_OnMessageReceived(IOTClient sender, string message)
         {
-            Console.WriteLine("Message received from server");
+            Console.WriteLine("Message received from client");
             Console.WriteLine(message);
 
-            //HandleMessage(sender, message);
-
-            //Console.WriteLine(MessageSerializer.Deserialize(message));
-        }
-
-        private static void HandleMessage(IOTClient client, string str)
-        {
-            var message = MessageSerializer.Deserialize(str);
-
-            switch (message.MessageType)
-            {
-                case Domain.Data.Enums.MessageType.Command:
-                    //outgoingMessageQueue.Enqueue(new IOTClientOnMessageReceivedArgs
-                    //{
-                    //    Client = client,
-                    //    Message = message
-                    //});
-                    //HandleCommandMessage(message);
-
-                    client.Send(str);
-                    break;
-
-                case Domain.Data.Enums.MessageType.Info:
-                    incomingMessageQueue.Enqueue(new IOTClientOnMessageReceivedArgs
-                    {
-                        Client = client,
-                        Message = message
-                    });
-                    //HandleInfoMessage(message);
-                    break;
-            }
-        }
-
-        private static void HandleCommandMessage(IMessage message)
-        {
-            if(message is LedOnOffMessage)
-            {
-
-            }
-        }
-
-        private static void HandleInfoMessage(IMessage message)
-        {
-            if(message is SensorInfoMessage)
-            {
-
-            }
+            hub.OnIotMessageReceived(message);
         }
     }
 
@@ -148,16 +104,77 @@ namespace IOT.Presentation.ServerConsole
     {
         public void Configuration(IAppBuilder app)
         {
-            app.UseCors(CorsOptions.AllowAll);
-            app.MapSignalR();
+            //app.UseCors(CorsOptions.AllowAll);
+            //app.MapSignalR();
+
+            // Branch the pipeline here for requests that start with "/signalr"
+            app.Map("/signalr", map =>
+            {
+                // Setup the CORS middleware to run before SignalR.
+                // By default this will allow all origins. You can 
+                // configure the set of origins and/or http verbs by
+                // providing a cors options with a different policy.
+                map.UseCors(CorsOptions.AllowAll);
+                var hubConfiguration = new HubConfiguration
+                {
+                    // You can enable JSONP by uncommenting line below.
+                    // JSONP requests are insecure but some older browsers (and some
+                    // versions of IE) require JSONP to work cross domain
+                    EnableJSONP = true
+                };
+                // Run the SignalR pipeline. We're not using MapSignalR
+                // since this branch already runs under the "/signalr"
+                // path.
+
+                hubConfiguration.EnableDetailedErrors = true;
+                map.RunSignalR(hubConfiguration);
+            });
         }
     }
 
-    public class MyHub : Hub
+    [HubName("iotHub")]
+    public class IOTHub : Hub
     {
-        public void Send(string name, string message)
+        static IHubContext hubContext = GlobalHost.ConnectionManager.GetHubContext<IOTHub>();
+
+        public List<IOTClient> ClientList = new List<IOTClient>();
+
+        public IOTHub()
         {
-            Clients.All.addMessage(name, message);
+
+        }
+
+        public void Send(string str)
+        {
+            var message = MessageSerializer.Deserialize(str);
+
+            Console.WriteLine(JsonConvert.SerializeObject(message));
+
+            if(ClientList.Count > 0)
+            {
+                ClientList[0].Send(str);
+            }
+
+            Clients.All.addMessage(message);
+        }
+
+        public void OnIotConnected()
+        {
+            hubContext.Clients.All.onConnected();
+        }
+
+        public void OnIotDisconnected()
+        {
+            hubContext.Clients.All.onDisconnected();
+        }
+
+        public void OnIotMessageReceived(string str)
+        {
+            var message = MessageSerializer.Deserialize(str);
+
+            Console.WriteLine(JsonConvert.SerializeObject(message));
+
+            hubContext.Clients.All.onMessageReceived(message);
         }
     }
 }

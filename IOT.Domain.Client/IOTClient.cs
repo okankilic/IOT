@@ -214,7 +214,14 @@ namespace IOT.Domain.Client
                     var stream = tcpClient.GetStream();
                     if (stream.CanWrite)
                     {
-                        var buffer = ASCIIEncoding.UTF8.GetBytes($"Hello from {ID}");
+                        var random = new Random();
+
+                        var temp = random.NextDouble();
+                        var hum = random.Next(40, 60);
+
+                        var message = $"Info/Sensor/State?no=1&temp={temp}&hum={hum}";
+
+                        var buffer = Encoding.UTF8.GetBytes(message);
 
                         stream.Write(buffer, 0, buffer.Length);
                     }
@@ -225,7 +232,7 @@ namespace IOT.Domain.Client
                 }
                 finally
                 {
-                    Thread.Sleep(5000);
+                    Thread.Sleep(3000);
                 }
             }
         }
