@@ -2,8 +2,10 @@
 using IOT.Domain.Data.Interfaces.Messages;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace IOT.Domain.Data.Models.Messages
@@ -26,7 +28,7 @@ namespace IOT.Domain.Data.Models.Messages
             {
                 var arg = Args.Single(q => q.Key == temperatureKey);
 
-                return float.Parse(arg.Value);
+                return float.Parse(arg.Value, Thread.CurrentThread.CurrentCulture);
             }
         }
 
@@ -36,7 +38,7 @@ namespace IOT.Domain.Data.Models.Messages
             {
                 var arg = Args.Single(q => q.Key == humidityKey);
 
-                return float.Parse(arg.Value);
+                return float.Parse(arg.Value, Thread.CurrentThread.CurrentCulture);
             }
         }
 
