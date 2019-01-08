@@ -46,10 +46,10 @@ namespace IOT.Presentation.ServerConsole
                     }
                     else
                     {
-                        if (hub.ClientList.Count > 0)
-                        {
-                            hub.ClientList[0].Send(cmd);
-                        }
+                        //if (hub.ClientList.Count > 0)
+                        //{
+                        //    hub.ClientList[0].Send(cmd);
+                        //}
                     }
                 }
             }
@@ -65,9 +65,7 @@ namespace IOT.Presentation.ServerConsole
             iotClient.OnDisconnected += IotClient_OnDisconnected;
             iotClient.OnMessageReceived += IotClient_OnMessageReceived;
 
-            hub.ClientList.Add(iotClient);
-
-            hub.OnIotConnected();
+            hub.OnIotConnected(iotClient);
 
             iotClient.Start();
         }
@@ -77,9 +75,7 @@ namespace IOT.Presentation.ServerConsole
             client.OnDisconnected -= IotClient_OnDisconnected;
             client.OnMessageReceived -= IotClient_OnMessageReceived;
 
-            hub.ClientList.Remove(client);
-
-            hub.OnIotDisconnected();
+            hub.OnIotDisconnected(client);
 
             Console.WriteLine("IOTClient disconnected");
         }
@@ -137,7 +133,7 @@ namespace IOT.Presentation.ServerConsole
     {
         static IHubContext hubContext = GlobalHost.ConnectionManager.GetHubContext<IOTHub>();
 
-        public List<IOTClient> ClientList = new List<IOTClient>();
+        static List<IOTClient> ClientList = new List<IOTClient>();
 
         public IOTHub()
         {
@@ -146,25 +142,29 @@ namespace IOT.Presentation.ServerConsole
 
         public void Send(string str)
         {
-            var message = MessageSerializer.Deserialize(str);
+            //var message = MessageSerializer.Deserialize(str);
 
-            Console.WriteLine(JsonConvert.SerializeObject(message));
+            //Console.WriteLine(JsonConvert.SerializeObject(message));
 
             if(ClientList.Count > 0)
             {
                 ClientList[0].Send(str);
             }
 
-            Clients.All.addMessage(message);
+            Clients.All.addMessage(str);
         }
 
-        public void OnIotConnected()
+        public void OnIotConnected(IOTClient client)
         {
+            ClientList.Add(client);
+
             hubContext.Clients.All.onConnected();
         }
 
-        public void OnIotDisconnected()
+        public void OnIotDisconnected(IOTClient client)
         {
+            ClientList.Remove(client);
+
             hubContext.Clients.All.onDisconnected();
         }
 

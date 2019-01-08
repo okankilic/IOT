@@ -12,20 +12,13 @@ namespace IOT.Domain.Data.Models.Messages
     {
         public const MessageType MESSAGE_TYPE = MessageType.Info;
         public const ControllerType CONTROLLER_TYPE = ControllerType.Sensor;
-
-        private const string noKey = "no";
+        
         private const string temperatureKey = "temp";
         private const string humidityKey = "hum";
-
-        public int No
-        {
-            get
-            {
-                var arg = Args.Single(q => q.Key == noKey);
-
-                return int.Parse(arg.Value);
-            }
-        }
+        private const string waterLevelKey = "water_level";
+        private const string soilHumidityKey = "soil_humidity";
+        private const string totalMiliLitresKey = "total_mili_litres";
+        private const string relayStatusKey = "relay_status";
 
         public float Temperature
         {
@@ -44,6 +37,46 @@ namespace IOT.Domain.Data.Models.Messages
                 var arg = Args.Single(q => q.Key == humidityKey);
 
                 return float.Parse(arg.Value);
+            }
+        }
+
+        public int WaterLevel
+        {
+            get
+            {
+                var arg = Args.Single(q => q.Key == waterLevelKey);
+
+                return int.Parse(arg.Value);
+            }
+        }
+
+        public int SoilHumidity
+        {
+            get
+            {
+                var arg = Args.Single(q => q.Key == soilHumidityKey);
+
+                return int.Parse(arg.Value);
+            }
+        }
+
+        public int TotalMiliLitres
+        {
+            get
+            {
+                var arg = Args.Single(q => q.Key == totalMiliLitresKey);
+
+                return int.Parse(arg.Value);
+            }
+        }
+
+        public int RelayStatus
+        {
+            get
+            {
+                var arg = Args.Single(q => q.Key == relayStatusKey);
+
+                return int.Parse(arg.Value);
             }
         }
 

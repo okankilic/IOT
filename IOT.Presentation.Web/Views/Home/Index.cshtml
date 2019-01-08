@@ -16,7 +16,7 @@
 <br />
 
 <div class="row">
-    <div class="col-sm-4">
+    <div class="col-sm-2">
         <div class="panel panel-default">
             <div class="panel-heading">
                 Temperature
@@ -24,7 +24,7 @@
             <div id="temperature" class="panel-body">0</div>
         </div>
     </div>
-    <div class="col-sm-4">
+    <div class="col-sm-2">
         <div class="panel panel-default">
             <div class="panel-heading">
                 Humidity
@@ -32,8 +32,29 @@
             <div id="humidity" class="panel-body">0</div>
         </div>
     </div>
-    <div class="col-sm-4">
-
+    <div class="col-sm-2">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Water Level
+            </div>
+            <div id="waterLevel" class="panel-body">0</div>
+        </div>
+    </div>
+    <div class="col-sm-2">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Soil Humidity
+            </div>
+            <div id="soilHumidity" class="panel-body">0</div>
+        </div>
+    </div>
+    <div class="col-sm-2">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Total Mili Litres
+            </div>
+            <div id="totalMiliLitres" class="panel-body">0</div>
+        </div>
     </div>
 </div>
 
@@ -52,19 +73,30 @@
         };
 
         iotHub.client.onConnected = function () {
-            $('#ledOn').prop('disabled', false);
-            $('#ledOff').prop('disabled', false);
+            //$('#ledOn').prop('disabled', false);
+            //$('#ledOff').prop('disabled', false);
         }
 
         iotHub.client.onDisconnected = function () {
-            $('#ledOn').prop('disabled', true);
-            $('#ledOff').prop('disabled', true);
+            //$('#ledOn').prop('disabled', true);
+            //$('#ledOff').prop('disabled', true);
         }
 
         iotHub.client.onMessageReceived = function (msg) {
 
             $('#temperature').html(parseFloat(msg['Temperature']).toFixed(2));
             $('#humidity').html(parseFloat(msg['Humidity']).toFixed(2));
+            $('#waterLevel').html(parseInt(msg['WaterLevel']).toString());
+            $('#soilHumidity').html(parseInt(msg['SoilHumidity']).toString());
+            $('#totalMiliLitres').html(parseInt(msg['TotalMiliLitres']).toString());
+
+            if (msg['RelayStatus']) {
+                $('#ledOn').prop('disabled', true);
+                $('#ledOff').prop('disabled', false);
+            } else {
+                $('#ledOn').prop('disabled', false);
+                $('#ledOff').prop('disabled', true);
+            }
 
             //console.log(msg);
         }
@@ -74,10 +106,12 @@
             console.log("Connected, transport = " + $.connection.hub.transport.name);
 
             $('#ledOn').click(function () {
+                $('#ledOn').prop('disabled', true);
                 iotHub.server.send('Command/Led/on');
             });
 
             $('#ledOff').click(function () {
+                $('#ledOff').prop('disabled', true);
                 iotHub.server.send('Command/Led/off');
             });
 
