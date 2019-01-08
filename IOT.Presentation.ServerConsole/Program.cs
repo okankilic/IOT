@@ -11,9 +11,11 @@ using Newtonsoft.Json;
 using Owin;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace IOT.Presentation.ServerConsole
@@ -24,6 +26,10 @@ namespace IOT.Presentation.ServerConsole
 
         static void Main(string[] args)
         {
+
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("tr");
+            Thread.CurrentThread.CurrentUICulture = new CultureInfo("tr");
+
             string url = "http://localhost:1235";
 
             using (WebApp.Start(url))
