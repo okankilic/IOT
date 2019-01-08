@@ -216,10 +216,10 @@ namespace IOT.Domain.Client
                     {
                         var random = new Random();
 
-                        var temp = random.NextDouble();
-                        var hum = random.Next(40, 60);
+                        var temp = random.Next(0, 100) / 100;
+                        var hum = random.Next(40, 60) / 100;
 
-                        var message = $"Info/Sensor/State?no=1&temp={temp}&hum={hum}";
+                        var message = $"Info/Sensor/State?no=1&temp={temp}&hum={hum}&water_level=0&soil_humidity=50&total_mili_litres=10&relay_status=0";
 
                         var buffer = Encoding.UTF8.GetBytes(message);
 

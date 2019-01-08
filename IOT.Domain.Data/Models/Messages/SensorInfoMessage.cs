@@ -2,6 +2,7 @@
 using IOT.Domain.Data.Interfaces.Messages;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -28,7 +29,7 @@ namespace IOT.Domain.Data.Models.Messages
             {
                 var arg = Args.Single(q => q.Key == temperatureKey);
 
-                return float.Parse(arg.Value, Thread.CurrentThread.CurrentCulture);
+                return float.Parse(arg.Value, new CultureInfo(ConfigurationManager.AppSettings["lang"]));
             }
         }
 
@@ -38,7 +39,7 @@ namespace IOT.Domain.Data.Models.Messages
             {
                 var arg = Args.Single(q => q.Key == humidityKey);
 
-                return float.Parse(arg.Value, Thread.CurrentThread.CurrentCulture);
+                return float.Parse(arg.Value, new CultureInfo(ConfigurationManager.AppSettings["lang"]));
             }
         }
 
