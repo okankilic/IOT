@@ -9,6 +9,8 @@ namespace IOT.Domain.Data.Interfaces.Messages
 {
     public interface IMessage
     {
+        DateTime MessageTime { get; set; }
+
         MessageType MessageType { get; }
 
         ControllerType ControllerType { get; }

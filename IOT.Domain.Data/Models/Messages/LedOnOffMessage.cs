@@ -1,5 +1,6 @@
 ﻿using IOT.Domain.Data.Enums;
 using IOT.Domain.Data.Interfaces.Messages;
+using System;
 using System.Collections.Generic;
 
 namespace IOT.Domain.Data.Models.Messages
@@ -11,9 +12,12 @@ namespace IOT.Domain.Data.Models.Messages
 
         public LedOnOffMessage(string action, KeyValuePair<string, string>[] args)
         {
+            MessageTime = DateTime.Now;
             Action = action;
             Args = args;
         }
+
+        public DateTime MessageTime { get; set; }
 
         public MessageType MessageType => MESSAGE_TYPE;
 

@@ -23,6 +23,8 @@ namespace IOT.Domain.Data.Models.Messages
         private const string totalMiliLitresKey = "total_mili_litres";
         private const string relayStatusKey = "relay_status";
 
+        public DateTime MessageTime { get; set; }
+
         public float Temperature
         {
             get
@@ -85,6 +87,7 @@ namespace IOT.Domain.Data.Models.Messages
 
         public SensorInfoMessage(string action, KeyValuePair<string, string>[] args)
         {
+            MessageTime = DateTime.Now;
             Action = action;
             Args = args;
         }

@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
@@ -161,6 +162,56 @@ namespace IOT.Presentation.ServerConsole
             Clients.All.addMessage(str);
         }
 
+        public List<SensorInfoMessage> GetDailyReport()
+        {
+            var endTime = DateTime.Now;
+            var startTime = endTime.AddDays(-1);
+
+            var endFileName = endTime.ToString("yyyy-MM-dd") + ".txt";
+            var startFileName = startTime.ToString("yyyy-MM-dd") + ".txt";
+
+            var fileList = new List<string> { startFileName, endFileName };
+
+            var dailyData = new List<SensorInfoMessage>();
+
+            foreach (var fileName in fileList)
+            {
+                if (File.Exists(fileName))
+                {
+                    using (var fs = File.OpenRead(fileName))
+                    {
+                        using (var sr = new StreamReader(fs))
+                        {
+                            var lineString = sr.ReadLine();
+
+                            while (!string.IsNullOrEmpty(lineString))
+                            {
+                                var args = lineString.Split(' ');
+
+                                var messageTime = DateTime.ParseExact(args[0], "yyyyMMddHHmmss", CultureInfo.InvariantCulture);
+
+                                if (messageTime >= startTime || messageTime <= endTime)
+                                {
+                                    var message = MessageSerializer.Deserialize(args[1]);
+
+                                    message.MessageTime = messageTime;
+
+                                    if (message is SensorInfoMessage)
+                                    {
+                                        dailyData.Add(message as SensorInfoMessage);
+                                    }
+                                }
+
+                                lineString = sr.ReadLine();
+                            }
+                        }
+                    }
+                }
+            }
+
+            return dailyData;
+        }
+
         public void OnIotConnected(IOTClient client)
         {
             ClientList.Add(client);
@@ -178,6 +229,20 @@ namespace IOT.Presentation.ServerConsole
         public void OnIotMessageReceived(string str)
         {
             var message = MessageSerializer.Deserialize(str);
+
+            if(message is SensorInfoMessage)
+            {
+                var sensorInfoMessage = message as SensorInfoMessage;
+
+                var fileName = sensorInfoMessage.MessageTime.ToString("yyyy-MM-dd") + ".txt";
+
+                using (var sw = File.AppendText(fileName))
+                {
+                    var lineString = string.Format("{0:yyyyMMddHHmmss} {1}", sensorInfoMessage.MessageTime, str);
+
+                    sw.WriteLine(lineString);
+                }
+            }
 
             Console.WriteLine(JsonConvert.SerializeObject(message));
 

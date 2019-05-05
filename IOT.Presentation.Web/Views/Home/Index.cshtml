@@ -16,44 +16,59 @@
 <br />
 
 <div class="row">
-    <div class="col-sm-2">
+    <div class="col-sm-6">
         <div class="panel panel-default">
             <div class="panel-heading">
                 Temperature
             </div>
-            <div id="temperature" class="panel-body">0</div>
+            <div class="panel-body">
+                <div id="temperature">0</div>
+                <div id="chart-temperature"></div>
+            </div>
         </div>
     </div>
-    <div class="col-sm-2">
+    <div class="col-sm-6">
         <div class="panel panel-default">
             <div class="panel-heading">
                 Humidity
             </div>
-            <div id="humidity" class="panel-body">0</div>
+            <div class="panel-body">
+                <div id="humidity">0</div>
+                <div id="chart-humidity"></div>
+            </div>
         </div>
     </div>
-    <div class="col-sm-2">
+    <div class="col-sm-6">
         <div class="panel panel-default">
             <div class="panel-heading">
                 Water Level
             </div>
-            <div id="waterLevel" class="panel-body">0</div>
+            <div class="panel-body">
+                <div id="waterLevel">0</div>
+                <div id="chart-waterLevel"></div>
+            </div>
         </div>
     </div>
-    <div class="col-sm-2">
+    <div class="col-sm-6">
         <div class="panel panel-default">
             <div class="panel-heading">
                 Soil Humidity
             </div>
-            <div id="soilHumidity" class="panel-body">0</div>
+            <div class="panel-body">
+                <div id="soilHumidity">0</div>
+                <div id="chart-soilHumidity"></div>
+            </div>
         </div>
     </div>
-    <div class="col-sm-2">
+    <div class="col-sm-6">
         <div class="panel panel-default">
             <div class="panel-heading">
                 Total Mili Litres
             </div>
-            <div id="totalMiliLitres" class="panel-body">0</div>
+            <div class="panel-body">
+                <div id="totalMiliLitres">0</div>
+                <div id="chart-totalMiliLitres"></div>
+            </div>
         </div>
     </div>
 </div>
@@ -64,58 +79,176 @@
 
     <script type="text/javascript">
 
-        var iotHub = $.connection.iotHub;
+        $(function () {
 
-        $.connection.hub.url = 'http://localhost:1235/signalr';
+            $('#chart-temperature').dxChart({
+                dataSource: [],
+                commonAxisSettings: {
+                    grid: {
+                        visible: true
+                    }
+                },
+                argumentAxis: {
+                    argumentType: 'datetime'
+                },
+                valueAxis: {
+                    valueType: 'numeric'
+                },
+                series: {
+                    argumentField: 'MessageTime',
+                    valueField: 'Temperature',
+                    type: 'line'
+                }
+            });
 
-        iotHub.client.addMessage = function (msg) {
-            console.log(msg);
-        };
+            $('#chart-humidity').dxChart({
+                dataSource: [],
+                commonAxisSettings: {
+                    grid: {
+                        visible: true
+                    }
+                },
+                argumentAxis: {
+                    argumentType: 'datetime'
+                },
+                valueAxis: {
+                    valueType: 'numeric'
+                },
+                series: {
+                    argumentField: 'MessageTime',
+                    valueField: 'Humidity',
+                    type: 'line'
+                }
+            });
 
-        iotHub.client.onConnected = function () {
-            //$('#ledOn').prop('disabled', false);
-            //$('#ledOff').prop('disabled', false);
-        }
+            $('#chart-waterLevel').dxChart({
+                dataSource: [],
+                commonAxisSettings: {
+                    grid: {
+                        visible: true
+                    }
+                },
+                argumentAxis: {
+                    argumentType: 'datetime'
+                },
+                valueAxis: {
+                    valueType: 'numeric'
+                },
+                series: {
+                    argumentField: 'MessageTime',
+                    valueField: 'WaterLevel',
+                    type: 'line'
+                }
+            });
 
-        iotHub.client.onDisconnected = function () {
-            //$('#ledOn').prop('disabled', true);
-            //$('#ledOff').prop('disabled', true);
-        }
+            $('#chart-soilHumidity').dxChart({
+                dataSource: [],
+                commonAxisSettings: {
+                    grid: {
+                        visible: true
+                    }
+                },
+                argumentAxis: {
+                    argumentType: 'datetime'
+                },
+                valueAxis: {
+                    valueType: 'numeric'
+                },
+                series: {
+                    argumentField: 'MessageTime',
+                    valueField: 'SoilHumidity',
+                    type: 'line'
+                }
+            });
 
-        iotHub.client.onMessageReceived = function (msg) {
+            $('#chart-totalMiliLitres').dxChart({
+                dataSource: [],
+                commonAxisSettings: {
+                    grid: {
+                        visible: true
+                    }
+                },
+                argumentAxis: {
+                    argumentType: 'datetime'
+                },
+                valueAxis: {
+                    valueType: 'numeric'
+                },
+                series: {
+                    argumentField: 'MessageTime',
+                    valueField: 'TotalMiliLitres',
+                    type: 'line'
+                }
+            });
 
-            $('#temperature').html(parseFloat(msg['Temperature']).toFixed(2));
-            $('#humidity').html(parseFloat(msg['Humidity']).toFixed(2));
-            $('#waterLevel').html(parseInt(msg['WaterLevel']).toString());
-            $('#soilHumidity').html(parseInt(msg['SoilHumidity']).toString());
-            $('#totalMiliLitres').html(parseInt(msg['TotalMiliLitres']).toString());
+            var iotHub = $.connection.iotHub;
 
-            if (msg['RelayStatus']) {
-                $('#ledOn').prop('disabled', true);
-                $('#ledOff').prop('disabled', false);
-            } else {
-                $('#ledOn').prop('disabled', false);
-                $('#ledOff').prop('disabled', true);
+            $.connection.hub.url = 'http://localhost:1235/signalr';
+
+            iotHub.client.addMessage = function (msg) {
+                console.log(msg);
+            };
+
+            iotHub.client.onConnected = function () {
+                //$('#ledOn').prop('disabled', false);
+                //$('#ledOff').prop('disabled', false);
             }
 
-            //console.log(msg);
-        }
+            iotHub.client.onDisconnected = function () {
+                //$('#ledOn').prop('disabled', true);
+                //$('#ledOff').prop('disabled', true);
+            }
 
-        $.connection.hub.start().done(function () {
+            iotHub.client.onMessageReceived = function (msg) {
 
-            console.log("Connected, transport = " + $.connection.hub.transport.name);
+                $('#temperature').html(parseFloat(msg['Temperature']).toFixed(2));
+                $('#humidity').html(parseFloat(msg['Humidity']).toFixed(2));
+                $('#waterLevel').html(parseInt(msg['WaterLevel']).toString());
+                $('#soilHumidity').html(parseInt(msg['SoilHumidity']).toString());
+                $('#totalMiliLitres').html(parseInt(msg['TotalMiliLitres']).toString());
 
-            $('#ledOn').click(function () {
-                $('#ledOn').prop('disabled', true);
-                iotHub.server.send('Command/Led/on');
-            });
+                if (msg['RelayStatus']) {
+                    $('#ledOn').prop('disabled', true);
+                    $('#ledOff').prop('disabled', false);
+                } else {
+                    $('#ledOn').prop('disabled', false);
+                    $('#ledOff').prop('disabled', true);
+                }
 
-            $('#ledOff').click(function () {
-                $('#ledOff').prop('disabled', true);
-                iotHub.server.send('Command/Led/off');
-            });
+                $('#chart-temperature').dxChart('getDataSource').store().push([{ type: "insert", data: msg }]);
+                $('#chart-humidity').dxChart('getDataSource').store().push([{ type: "insert", data: msg }]);
+                $('#chart-waterLevel').dxChart('getDataSource').store().push([{ type: "insert", data: msg }]);
+                $('#chart-soilHumidity').dxChart('getDataSource').store().push([{ type: "insert", data: msg }]);
+                $('#chart-totalMiliLitres').dxChart('getDataSource').store().push([{ type: "insert", data: msg }]);
+            }
+
+            $.connection.hub.start().done(function () {
+
+                console.log("Connected, transport = " + $.connection.hub.transport.name);
+
+                $('#ledOn').click(function () {
+                    $('#ledOn').prop('disabled', true);
+                    iotHub.server.send('Command/Led/on');
+                });
+
+                $('#ledOff').click(function () {
+                    $('#ledOff').prop('disabled', true);
+                    iotHub.server.send('Command/Led/off');
+                });
+
+                iotHub.server.getDailyReport().done(function (data) {
+
+                    $('#chart-temperature').dxChart('option', 'dataSource', data);
+                    $('#chart-soilHumidity').dxChart('option', 'dataSource', data);
+
+                    //console.log(data);
+                });
+
+            })
 
         })
+
+        
 
     </script>
 

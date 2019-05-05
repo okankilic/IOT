@@ -10,6 +10,8 @@ namespace IOT.Domain.Data.Models.Messages
 {
     public sealed class Message : IMessage
     {
+        public DateTime MessageTime { get; set; }
+
         public MessageType MessageType { get; set; }
 
         public ControllerType ControllerType { get; set; }
