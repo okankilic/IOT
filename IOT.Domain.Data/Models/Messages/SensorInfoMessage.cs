@@ -21,7 +21,10 @@ namespace IOT.Domain.Data.Models.Messages
         private const string waterLevelKey = "water_level";
         private const string soilHumidityKey = "soil_humidity";
         private const string totalMiliLitresKey = "total_mili_litres";
-        private const string relayStatusKey = "relay_status";
+        private const string wateringStatusKey = "watering_status";
+        private const string fertiLevelKey = "ferti_level";
+        private const string totalFertiKey = "total_ferti";
+        private const string fertiStatusKey = "ferti_status";
 
         public DateTime MessageTime { get; set; }
 
@@ -45,13 +48,13 @@ namespace IOT.Domain.Data.Models.Messages
             }
         }
 
-        public int WaterLevel
+        public float WaterLevel
         {
             get
             {
                 var arg = Args.Single(q => q.Key == waterLevelKey);
 
-                return int.Parse(arg.Value);
+                return float.Parse(arg.Value);
             }
         }
 
@@ -65,11 +68,41 @@ namespace IOT.Domain.Data.Models.Messages
             }
         }
 
-        public int TotalMiliLitres
+        public float TotalMiliLitres
         {
             get
             {
                 var arg = Args.Single(q => q.Key == totalMiliLitresKey);
+
+                return float.Parse(arg.Value);
+            }
+        }
+
+        public float FertiLevel
+        {
+            get
+            {
+                var arg = Args.Single(q => q.Key == fertiLevelKey);
+
+                return float.Parse(arg.Value);
+            }
+        }
+
+        public float TotalFerti
+        {
+            get
+            {
+                var arg = Args.Single(q => q.Key == totalFertiKey);
+
+                return float.Parse(arg.Value);
+            }
+        }
+
+        public int FertiStatus
+        {
+            get
+            {
+                var arg = Args.Single(q => q.Key == fertiStatusKey);
 
                 return int.Parse(arg.Value);
             }
@@ -79,7 +112,7 @@ namespace IOT.Domain.Data.Models.Messages
         {
             get
             {
-                var arg = Args.Single(q => q.Key == relayStatusKey);
+                var arg = Args.Single(q => q.Key == wateringStatusKey);
 
                 return int.Parse(arg.Value);
             }
