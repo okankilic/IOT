@@ -28,8 +28,6 @@ namespace IOT.Domain.Server
         {
             thread = new Thread(new ThreadStart(DoWork));
             thread.Start();
-
-            tcpListener.Start();
         }
 
         public void Stop() 
@@ -50,6 +48,8 @@ namespace IOT.Domain.Server
 
         private void DoWork()
         {
+            tcpListener.Start();
+
             isListening = true;
 
             while (isListening)

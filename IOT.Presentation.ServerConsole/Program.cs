@@ -32,7 +32,7 @@ namespace IOT.Presentation.ServerConsole
             Thread.CurrentThread.CurrentCulture = new CultureInfo(ConfigurationManager.AppSettings["lang"]);
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(ConfigurationManager.AppSettings["lang"]);
 
-            string url = "http://localhost:1235";
+            string url = "http://+:1235";
 
             using (WebApp.Start(url))
             {
